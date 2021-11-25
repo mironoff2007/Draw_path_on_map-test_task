@@ -7,7 +7,7 @@ android {
     buildToolsVersion '30.0.3'
 
     defaultConfig {
-        applicationId ""
+        applicationId "ru.mironov.drawpathonmaptesttask"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
@@ -45,4 +45,13 @@ dependencies {
     //implementation 'com.google.maps.android:android-maps-utils:2.2.3'
 
     //implementation group: 'mil.nga.sf', name: 'sf-geojson', version: '3.0.0'
+
+    // The lite library only contains the map, the traffic layer,
+    // LocationManager, and UserLocationLayer and lets you download offline maps (in the paid version only).
+    implementation 'com.yandex.android:maps.mobile:4.0.0-lite'
+
+    // The full library supplements the lite version features with car routing,
+    // bike routing, pedestrian routing, and public transport routing
+    // search, suggest, geocoding, and panorama display.
+    // implementation 'com.yandex.android:maps.mobile:4.0.0-full'
 }

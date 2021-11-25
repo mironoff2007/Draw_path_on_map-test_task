@@ -4,17 +4,36 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.map.CameraPosition
+
+import android.view.View
+import com.yandex.mapkit.Animation
+
+
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+
 
 class MainActivity : AppCompatActivity() {
+
+    private var mapView: MapView? = null
 
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MapKitFactory.setApiKey("2fdb0bd3-d231-46a6-ab8a-3a5668c377f7")
+        MapKitFactory.initialize(this)
+
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        setupObserver()
+
+        setupMapsCamera()
     }
 
     private fun setupObserver() {
@@ -31,6 +50,29 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    private fun setupMapsCamera(){
+        mapView = findViewById<View>(R.id.mapview) as MapView
+        mapView!!.map.move(
+            CameraPosition(Point(55.751574, 37.573856), 11.0f, 0.0f, 0.0f),
+            Animation(Animation.Type.SMOOTH, 0F),
+            null
+        )
+    }
+
+
+    override fun onStop() {
+        // onStop calls should be passed to MapView and MapKit instances.
+        mapView!!.onStop()
+        MapKitFactory.getInstance().onStop()
+        super.onStop()
+    }
+
+    override fun onStart() {
+        // onStart calls should be passed to MapView and MapKit instances.
+        super.onStart()
+        MapKitFactory.getInstance().onStart()
+        mapView!!.onStart()
     }
 }
