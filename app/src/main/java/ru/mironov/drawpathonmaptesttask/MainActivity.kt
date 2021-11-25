@@ -13,7 +13,6 @@ import com.yandex.mapkit.Animation
 
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.geometry.Polyline
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,9 +67,11 @@ class MainActivity : AppCompatActivity() {
         viewModel.arrayPolylines.forEach { polyline->
             map.mapObjects.addCollection().addPolyline(polyline)
         }
+    }
 
+    fun moveCamera(){
         map.move(
-            CameraPosition( viewModel.arrayPolylines[0].points[0], 11.0f, 0.0f, 0.0f),
+            CameraPosition( Point(50.0, 50.0), 2.0f, 0.0f, 0.0f),
             Animation(Animation.Type.SMOOTH, 0F),
             null
         )

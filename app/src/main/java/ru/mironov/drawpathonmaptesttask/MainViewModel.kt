@@ -6,7 +6,7 @@ import com.yandex.mapkit.geometry.Polyline
 
 class MainViewModel: ViewModel() {
 
-    private lateinit var repository: Repository
+    private var repository: Repository
 
     var arrayPolylines= arrayListOf<Polyline>()
 
@@ -26,8 +26,16 @@ class MainViewModel: ViewModel() {
                     val parser=GeoJsonParser()
                     if (repository.geoJson!=null){
                         arrayPolylines=parser.parsePolylines(repository.geoJson!!)
+                        if(arrayPolylines.size>0){
+                        viewModelStatus.postValue(Status.RESPONSE)
+                        }
+                        else{
+                            viewModelStatus.postValue(Status.ERROR)
+                        }
                     }
-                    viewModelStatus.postValue(Status.RESPONSE)
+                    else{
+                        viewModelStatus.postValue(Status.ERROR)
+                    }
                 }
                 Status.ERROR -> {
                         viewModelStatus.postValue(Status.ERROR)
