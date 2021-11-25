@@ -11,7 +11,7 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
 
    var geoJson :JsonObject?=null
 
-    fun getCurrencyFromWeb(curToCur: String, key: String) {
+    fun getGeoJson() {
         NetworkService
             .getJSONApi()
             .getGeoJson()
