@@ -41,6 +41,7 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    implementation 'com.google.code.gson:gson:2.8.6'
     //implementation 'com.google.maps.android:android-maps-utils:2.2.3'
 
     //implementation group: 'mil.nga.sf', name: 'sf-geojson', version: '3.0.0'
