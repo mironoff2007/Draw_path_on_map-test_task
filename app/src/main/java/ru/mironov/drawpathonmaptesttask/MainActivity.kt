@@ -13,6 +13,7 @@ import com.yandex.mapkit.Animation
 
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.geometry.Polyline
 
 
 class MainActivity : AppCompatActivity() {
@@ -54,11 +55,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupMapsCamera(){
         mapView = findViewById<View>(R.id.mapview) as MapView
-        mapView!!.map.move(
-            CameraPosition(Point(55.751574, 37.573856), 11.0f, 0.0f, 0.0f),
+        val map=mapView!!.map
+        map.move(
+            CameraPosition(Point(-80.0, 60.0), 11.0f, 0.0f, 0.0f),
             Animation(Animation.Type.SMOOTH, 0F),
             null
         )
+
+
+        // Создадим ломаную.
+        var polyline =  Polyline( arrayListOf(Point(-80.0, 60.0), Point(-90.0, 50.0)))
+        // Добавляем линию на карту.
+        map.mapObjects.addCollection().addPolyline(polyline);
+        // Устанавливаем карте границы линии.
     }
 
 
