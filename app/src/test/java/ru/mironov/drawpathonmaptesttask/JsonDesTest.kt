@@ -1,11 +1,9 @@
-package ru.mironov.draw_path_on_map_test_task
+package ru.mironov.drawpathonmaptesttask
 
 
 import com.google.gson.Gson
 
 import org.junit.Test
-
-import org.junit.Assert.*
 
 
 class JsonDesTest {

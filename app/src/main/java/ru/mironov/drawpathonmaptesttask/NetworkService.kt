@@ -1,4 +1,4 @@
-package ru.mironov.draw_path_on_map_test_task
+package ru.mironov.drawpathonmaptesttask
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

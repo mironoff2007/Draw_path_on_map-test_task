@@ -1,4 +1,4 @@
-package ru.mironov.draw_path_on_map_test_task
+package ru.mironov.drawpathonmaptesttask
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

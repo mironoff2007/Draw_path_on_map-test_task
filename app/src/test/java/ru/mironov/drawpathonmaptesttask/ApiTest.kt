@@ -1,16 +1,10 @@
-package ru.mironov.draw_path_on_map_test_task
+package ru.mironov.drawpathonmaptesttask
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
-import org.json.JSONObject
 import org.junit.Test
 import retrofit2.Call
 import retrofit2.Response
-import org.junit.Assert.*
-import ru.mironov.draw_path_on_map_test_task.NetworkService
 
 class ApiTest {
 
@@ -24,7 +18,7 @@ class ApiTest {
     @Test
     fun getRequestTest() {
 
-        val  call:Call<JsonObject>? = NetworkService.getJSONApi().getCurrencyMap()
+        val  call:Call<JsonObject>? = NetworkService.getJSONApi().getGeoJson()
         val response: Response<JsonObject> =call!!.execute()
         jo=response.body()
 
