@@ -23,6 +23,10 @@ class MainViewModel: ViewModel() {
             when (status) {
                 Status.RESPONSE -> {
                     //Parse and crate list of polylines
+                    val parser=GeoJsonParser()
+                    if (repository.geoJson!=null){
+                        arrayPolylines=parser.parsePolylines(repository.geoJson!!)
+                    }
                     viewModelStatus.postValue(Status.RESPONSE)
                 }
                 Status.ERROR -> {

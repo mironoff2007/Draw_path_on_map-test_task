@@ -8,6 +8,7 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.map.CameraPosition
 
 import android.view.View
+import android.widget.ProgressBar
 import com.yandex.mapkit.Animation
 
 import com.yandex.mapkit.MapKitFactory
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var map:com.yandex.mapkit.map.Map
 
+    private lateinit var progressBar:ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,11 +37,11 @@ class MainActivity : AppCompatActivity() {
 
         mapView = findViewById<View>(R.id.mapview) as MapView
 
+        progressBar = findViewById<View>(R.id.progressBar) as ProgressBar
+
         map=mapView!!.map
 
         setupObserver()
-
-        setupMapsCamera()
 
         viewModel.getGeoJson()
     }
@@ -47,57 +50,30 @@ class MainActivity : AppCompatActivity() {
         viewModel.viewModelStatus.observe(this) {
             when (it) {
                 Status.RESPONSE -> {
-
+                    drawPolylines()
+                    progressBar.visibility = View.INVISIBLE
                 }
                 Status.ERROR -> {
+                    progressBar.visibility = View.INVISIBLE
                     Toast.makeText(applicationContext, "ошибка", Toast.LENGTH_SHORT).show()
                 }
                 Status.LOADING -> {
-                    //progressBar.visibility = View.VISIBLE
+                    progressBar.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-    private fun setupMapsCamera(){
+    fun drawPolylines(){
+        viewModel.arrayPolylines.forEach { polyline->
+            map.mapObjects.addCollection().addPolyline(polyline)
+        }
 
         map.move(
-            CameraPosition( Point(
-                59.30014082100015,
-                81.3642031920001
-            ), 11.0f, 0.0f, 0.0f),
+            CameraPosition( viewModel.arrayPolylines[0].points[0], 11.0f, 0.0f, 0.0f),
             Animation(Animation.Type.SMOOTH, 0F),
             null
         )
-
-        var polyline =  Polyline( arrayListOf(
-            Point(
-                59.30014082100015,
-                81.3642031920001
-            ),
-            Point(
-                59.35694420700011,
-                81.34430573100003
-            ),
-            Point(
-                59.38542728000014,
-                81.3305524760001
-            ),
-            Point(
-                59.34245853000007,
-                81.30426666900009
-            ),
-            Point(
-                59.285166863000114,
-                81.30003489799999
-            ),
-            Point(
-                59.22486412900017,
-                81.30390045800007
-            )))
-        // Добавляем линию на карту.
-        map.mapObjects.addCollection().addPolyline(polyline);
-        // Устанавливаем карте границы линии.
     }
 
     override fun onStop() {

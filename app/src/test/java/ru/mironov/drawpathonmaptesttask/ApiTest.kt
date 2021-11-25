@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import org.junit.Test
 import retrofit2.Call
 import retrofit2.Response
+import ru.mironov.drawpathonmaptesttask.web.NetworkService
 
 class ApiTest {
 
@@ -44,7 +45,6 @@ class ApiTest {
                 j++
                 System.out.println(poly?.get(0).toString()+"/"+poly?.get(1).toString())
             }
-
         }
 
     }

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.mironov.drawpathonmaptesttask.web.NetworkService
 
 class Repository(var dataStatus: MutableLiveData<Status>) {
 

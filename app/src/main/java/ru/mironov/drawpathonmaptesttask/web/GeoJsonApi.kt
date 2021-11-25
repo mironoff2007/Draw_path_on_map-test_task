@@ -1,4 +1,4 @@
-package ru.mironov.drawpathonmaptesttask
+package ru.mironov.drawpathonmaptesttask.web
 
 
 import com.google.gson.JsonObject
