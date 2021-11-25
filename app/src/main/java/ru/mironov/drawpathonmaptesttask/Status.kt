@@ -1,5 +1,5 @@
 package ru.mironov.drawpathonmaptesttask
 
-enum class RemoteStatus {
+enum class Status {
  LOADING,ERROR,RESPONSE
 }

@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class Repository(var dataRemoteStatus: MutableLiveData<RemoteStatus>) {
+class Repository(var dataStatus: MutableLiveData<Status>) {
 
    var geoJson :JsonObject?=null
 
@@ -18,15 +18,15 @@ class Repository(var dataRemoteStatus: MutableLiveData<RemoteStatus>) {
             ?.enqueue(object : Callback<JsonObject?> {
 
                 override fun onFailure(call: Call<JsonObject?>, t: Throwable) {
-                    dataRemoteStatus.postValue(RemoteStatus.ERROR)
+                    dataStatus.postValue(Status.ERROR)
                 }
 
                 override fun onResponse(call: Call<JsonObject?>, response: Response<JsonObject?>) {
                     if (response.body() == null) {
-                        dataRemoteStatus.postValue(RemoteStatus.ERROR)
+                        dataStatus.postValue(Status.ERROR)
                     } else {
                        geoJson=response.body()
-                        dataRemoteStatus.postValue(RemoteStatus.RESPONSE)
+                        dataStatus.postValue(Status.RESPONSE)
                     }
                 }
             })
