@@ -1,0 +1,2 @@
+rootProject.name='Draw_path_on_map-test_task'
+include ':app'
