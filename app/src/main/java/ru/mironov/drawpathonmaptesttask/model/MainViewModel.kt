@@ -33,9 +33,11 @@ class MainViewModel : ViewModel() {
                         if (arrayPolylines.size > 0) {
                             viewModelStatus.postValue(Status.RESPONSE)
                         } else {
+                            //если почему-то координат нет
                             viewModelStatus.postValue(Status.ERROR)
                         }
                     } else {
+                        //если пустой ответ
                         viewModelStatus.postValue(Status.ERROR)
                     }
                 }
@@ -52,11 +54,12 @@ class MainViewModel : ViewModel() {
     }
 
     fun calculateLengths(): Int {
-        val arr= arrayListOf<Int>()
+        //массив чтобы длину всех полилиний просмотреть
+        //val arr= arrayListOf<Int>()
+
         var length = 0.0
         var lengthPolyline = 0.0
         var pointLast: Point? = null
-
 
         arrayPolylines.forEach {
             //Polyline next
@@ -69,11 +72,12 @@ class MainViewModel : ViewModel() {
                 }
                 pointLast = it
             }
-            arr.add((lengthPolyline / 1000).toInt())
+            //arr.add((lengthPolyline / 1000).toInt())
             length += lengthPolyline
             lengthPolyline=0.0
 
         }
+        //Перевести в километры
         return (length / 1000).toInt()
     }
 }

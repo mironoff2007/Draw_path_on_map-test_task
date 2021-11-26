@@ -1,5 +1,6 @@
 package ru.mironov.drawpathonmaptesttask
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -54,12 +55,22 @@ class MainActivity : AppCompatActivity() {
         viewModel.getGeoJson()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupObserver() {
         viewModel.viewModelStatus.observe(this) {
             when (it) {
                 Status.RESPONSE -> {
-                    drawPolylines()
-                    drawPolyline(159)
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        drawPolylines()
+                        //отдельно отрисовать самую длинную полилинию
+                        //drawPolyline(159)
+
+                        //посчитать и показать длину всех линий
+                        val len = viewModel.calculateLengths()
+                        textView.text =
+                            getString(R.string.length) + " = " + len.toString() + getString(R.string.length_unit)
+                        progressBar.visibility = View.INVISIBLE
+                    }
                 }
                 Status.ERROR -> {
                     progressBar.visibility = View.INVISIBLE
@@ -71,34 +82,32 @@ class MainActivity : AppCompatActivity() {
                 }
                 Status.LOADING -> {
                     progressBar.visibility = View.VISIBLE
-                    textView.text=getString(R.string.loading)
+                    textView.text = getString(R.string.loading)
                 }
             }
         }
     }
 
+    //Выделить одну полилилнию
     private fun drawPolyline(i: Int) {
-        if(viewModel.arrayPolylines.size>i){
-        val mapPolyline = mapObjects.addPolyline(viewModel.arrayPolylines[i])
-        mapPolyline.strokeColor = Color.RED
-        mapPolyline.strokeWidth= 5F}
-    }
-
-    fun drawPolylines() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.arrayPolylines.forEach { polyline ->
-                val mapPolyline = mapObjects.addPolyline(polyline)
-                mapPolyline.strokeColor = Color.GREEN
-                mapPolyline.strokeWidth= 1F
-            }
-            progressBar.visibility = View.INVISIBLE
-            val len = viewModel.calculateLengths()
-
-            textView.text=getString(R.string.length)+"="+len.toString()+getString(R.string.length_unit)
-
+        if (viewModel.arrayPolylines.size > i) {
+            val mapPolyline = mapObjects.addPolyline(viewModel.arrayPolylines[i])
+            mapPolyline.strokeColor = Color.RED
+            mapPolyline.strokeWidth = 5F
         }
     }
 
+    //нарисовать все полилинии
+    private fun drawPolylines() {
+        viewModel.arrayPolylines.forEach { polyline ->
+            val mapPolyline = mapObjects.addPolyline(polyline)
+            mapPolyline.strokeColor = Color.GREEN
+            mapPolyline.strokeWidth = 1F
+        }
+    }
+
+    //переместить камеру
+    //можно найти карйние точки линий и отцентрировать камеру, но пока не стал этого делать
     fun moveCamera() {
         map.move(
             CameraPosition(Point(50.0, 50.0), 2.0f, 0.0f, 0.0f),
