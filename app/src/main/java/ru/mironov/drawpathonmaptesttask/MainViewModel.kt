@@ -2,6 +2,7 @@ package ru.mironov.drawpathonmaptesttask
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
 
 class MainViewModel : ViewModel() {
@@ -45,5 +46,21 @@ class MainViewModel : ViewModel() {
     fun getGeoJson() {
         repository.getGeoJson()
         viewModelStatus.postValue(Status.LOADING)
+    }
+
+    fun calculateLengths():Int{
+        val calc=DistanceCalculator()
+        var length=0.0
+        var pointLast:Point?=null
+
+        arrayPolylines.forEach{
+            it.points.forEach {
+                if(pointLast!=null){
+                length=length+calc.calcDist(pointLast!!,it)}
+                pointLast=it
+            }
+            pointLast=null
+        }
+        return (length/1000).toInt()
     }
 }

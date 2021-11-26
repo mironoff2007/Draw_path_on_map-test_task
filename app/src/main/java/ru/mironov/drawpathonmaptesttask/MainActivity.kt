@@ -69,6 +69,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.arrayPolylines.forEach { polyline ->
             map.mapObjects.addCollection().addPolyline(polyline)
         }
+        val len=viewModel.calculateLengths()
+        Toast.makeText(
+            applicationContext,
+            "length="+len+"km",
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     fun moveCamera() {
