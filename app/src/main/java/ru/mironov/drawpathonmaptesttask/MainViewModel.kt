@@ -4,11 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yandex.mapkit.geometry.Polyline
 
-class MainViewModel: ViewModel() {
+class MainViewModel : ViewModel() {
 
     private var repository: Repository
 
-    var arrayPolylines= arrayListOf<Polyline>()
+    var arrayPolylines = arrayListOf<Polyline>()
 
     private val dataStatus: MutableLiveData<Status> = MutableLiveData<Status>()
     val viewModelStatus: MutableLiveData<Status> = MutableLiveData<Status>()
@@ -23,31 +23,27 @@ class MainViewModel: ViewModel() {
             when (status) {
                 Status.RESPONSE -> {
                     //Parse and crate list of polylines
-                    val parser=GeoJsonParser()
-                    if (repository.geoJson!=null){
-                        arrayPolylines=parser.parsePolylines(repository.geoJson!!)
-                        if(arrayPolylines.size>0){
-                        viewModelStatus.postValue(Status.RESPONSE)
-                        }
-                        else{
+                    val parser = GeoJsonParser()
+                    if (repository.geoJson != null) {
+                        arrayPolylines = parser.parsePolylines(repository.geoJson!!)
+                        if (arrayPolylines.size > 0) {
+                            viewModelStatus.postValue(Status.RESPONSE)
+                        } else {
                             viewModelStatus.postValue(Status.ERROR)
                         }
-                    }
-                    else{
+                    } else {
                         viewModelStatus.postValue(Status.ERROR)
                     }
                 }
                 Status.ERROR -> {
-                        viewModelStatus.postValue(Status.ERROR)
+                    viewModelStatus.postValue(Status.ERROR)
                 }
             }
         }
     }
 
-    fun getGeoJson(){
+    fun getGeoJson() {
         repository.getGeoJson()
         viewModelStatus.postValue(Status.LOADING)
     }
-
-
 }

@@ -9,44 +9,46 @@ import ru.mironov.drawpathonmaptesttask.web.NetworkService
 
 class ApiTest {
 
-    var jo:JsonObject?=null
-    var f:JsonObject?=null
-    var g:JsonObject?=null
-   var polygons=arrayListOf<JsonArray?>()
-    var polygon=arrayListOf<JsonArray?>()
+    var jo: JsonObject? = null
+    var features: JsonObject? = null
+    var geometry: JsonObject? = null
+    var polygons = arrayListOf<JsonArray?>()
 
 
     @Test
     fun getRequestTest() {
 
-        val  call:Call<JsonObject>? = NetworkService.getJSONApi().getGeoJson()
-        val response: Response<JsonObject> =call!!.execute()
-        jo=response.body()
+        val call: Call<JsonObject>? = NetworkService.getJSONApi().getGeoJson()
+        val response: Response<JsonObject> = call!!.execute()
+        jo = response.body()
 
-        val s= jo?.get("type")?.asString
-        f= jo?.get("features")?.asJsonArray?.get(0) as JsonObject?
-        g= f?.get("geometry") as JsonObject?
-        val c=g?.get("coordinates")?.asJsonArray
+        features = jo?.get("features")?.asJsonArray?.get(0) as JsonObject?
+        geometry = features?.get("geometry") as JsonObject?
+        val coordinates = geometry?.get("coordinates")?.asJsonArray
 
-        var i=0
-        var sizeCoords=0
-        if(c?.size()!=null){sizeCoords=c?.size()}
-        while(i<sizeCoords){
-            var p=c?.get(i) as JsonArray?
-            p=p?.get(0) as JsonArray?
+        var i = 0
+        var sizeCoords = 0
+        if (coordinates?.size() != null) {
+            sizeCoords = coordinates?.size()
+        }
+        while (i < sizeCoords) {
+            var p = coordinates?.get(i) as JsonArray?
+            p = p?.get(0) as JsonArray?
             polygons.add(p)
             i++
 
-            var j=0
-            var sizePoligons=0
-            if(p?.size()!=null){sizePoligons=p?.size()}
-            while(j<sizePoligons){
-                val poly=p?.get(j) as JsonArray?
+            var j = 0
+            var sizePoligons = 0
+            if (p?.size() != null) {
+                sizePoligons = p?.size()
+            }
+            while (j < sizePoligons) {
+                val poly = p?.get(j) as JsonArray?
                 j++
-                System.out.println(poly?.get(0).toString()+"/"+poly?.get(1).toString())
+                System.out.println(poly?.get(0).toString() + "/" + poly?.get(1).toString())
             }
         }
-
+        assert(polygons.size==213)
     }
 
 }

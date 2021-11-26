@@ -1,18 +1,16 @@
 package ru.mironov.drawpathonmaptesttask
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
-import com.yandex.mapkit.mapview.MapView
-import com.yandex.mapkit.map.CameraPosition
-
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.yandex.mapkit.Animation
-
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.mapview.MapView
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,9 +18,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
 
-    private lateinit var map:com.yandex.mapkit.map.Map
+    private lateinit var map: com.yandex.mapkit.map.Map
 
-    private lateinit var progressBar:ProgressBar
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         progressBar = findViewById<View>(R.id.progressBar) as ProgressBar
 
-        map=mapView!!.map
+        map = mapView!!.map
 
         setupObserver()
 
@@ -54,7 +52,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     progressBar.visibility = View.INVISIBLE
-                    Toast.makeText(applicationContext, "ошибка", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.error),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 Status.LOADING -> {
                     progressBar.visibility = View.VISIBLE
@@ -63,15 +65,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun drawPolylines(){
-        viewModel.arrayPolylines.forEach { polyline->
+    fun drawPolylines() {
+        viewModel.arrayPolylines.forEach { polyline ->
             map.mapObjects.addCollection().addPolyline(polyline)
         }
     }
 
-    fun moveCamera(){
+    fun moveCamera() {
         map.move(
-            CameraPosition( Point(50.0, 50.0), 2.0f, 0.0f, 0.0f),
+            CameraPosition(Point(50.0, 50.0), 2.0f, 0.0f, 0.0f),
             Animation(Animation.Type.SMOOTH, 0F),
             null
         )

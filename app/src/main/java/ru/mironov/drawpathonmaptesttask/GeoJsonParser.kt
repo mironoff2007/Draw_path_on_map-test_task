@@ -39,11 +39,10 @@ class GeoJsonParser {
                     arrayPoints.add(Point(coord2, coord1))
                 }
             }
-            var polyline=Polyline(arrayPoints.toList())
+            var polyline = Polyline(arrayPoints.toList())
             arrayPoints.clear()
             arrayPolylines.add(polyline)
         }
         return arrayPolylines
     }
-
 }

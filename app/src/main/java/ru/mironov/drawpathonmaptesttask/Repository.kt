@@ -10,7 +10,7 @@ import ru.mironov.drawpathonmaptesttask.web.NetworkService
 
 class Repository(var dataStatus: MutableLiveData<Status>) {
 
-   var geoJson :JsonObject?=null
+    var geoJson: JsonObject? = null
 
     fun getGeoJson() {
         NetworkService
@@ -26,7 +26,7 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
                     if (response.body() == null) {
                         dataStatus.postValue(Status.ERROR)
                     } else {
-                       geoJson=response.body()
+                        geoJson = response.body()
                         dataStatus.postValue(Status.RESPONSE)
                     }
                 }
