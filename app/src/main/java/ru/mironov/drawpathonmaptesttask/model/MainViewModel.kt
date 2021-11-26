@@ -1,10 +1,12 @@
-package ru.mironov.drawpathonmaptesttask
+package ru.mironov.drawpathonmaptesttask.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yandex.mapkit.geometry.Geo
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
+import ru.mironov.drawpathonmaptesttask.Repository
+import ru.mironov.drawpathonmaptesttask.Status
 
 class MainViewModel : ViewModel() {
 

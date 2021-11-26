@@ -1,4 +1,4 @@
-package ru.mironov.drawpathonmaptesttask
+package ru.mironov.drawpathonmaptesttask.model
 
 
 import com.google.gson.annotations.Expose
@@ -18,7 +18,7 @@ public class MyJsonObject {
 
         @SerializedName("geometry")
         @Expose
-        var geometry:Geometry?=null
+        var geometry: Geometry?=null
     }
     class Geometry{
         @SerializedName("type")

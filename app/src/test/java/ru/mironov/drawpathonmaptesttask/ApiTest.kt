@@ -1,10 +1,9 @@
 package ru.mironov.drawpathonmaptesttask
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import org.junit.Test
 import retrofit2.Call
 import retrofit2.Response
+import ru.mironov.drawpathonmaptesttask.model.MyJsonObject
 import ru.mironov.drawpathonmaptesttask.web.NetworkServiceTest
 
 class ApiTest {
