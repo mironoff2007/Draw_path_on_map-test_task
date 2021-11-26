@@ -10,19 +10,19 @@ import ru.mironov.drawpathonmaptesttask.web.NetworkService
 
 class Repository(var dataStatus: MutableLiveData<Status>) {
 
-    var geoJson: JsonObject? = null
+    var geoJson: MyJsonObject? = null
 
     fun getGeoJson() {
         NetworkService
             .getJSONApi()
             .getGeoJson()
-            ?.enqueue(object : Callback<JsonObject?> {
+            ?.enqueue(object : Callback<MyJsonObject?> {
 
-                override fun onFailure(call: Call<JsonObject?>, t: Throwable) {
+                override fun onFailure(call: Call<MyJsonObject?>, t: Throwable) {
                     dataStatus.postValue(Status.ERROR)
                 }
 
-                override fun onResponse(call: Call<JsonObject?>, response: Response<JsonObject?>) {
+                override fun onResponse(call: Call<MyJsonObject?>, response: Response<MyJsonObject?>) {
                     if (response.body() == null) {
                         dataStatus.postValue(Status.ERROR)
                     } else {

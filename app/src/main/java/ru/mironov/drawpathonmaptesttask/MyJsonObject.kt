@@ -1,4 +1,4 @@
-package ru.mironov.drawpathonmaptesttask.web
+package ru.mironov.drawpathonmaptesttask
 
 
 import com.google.gson.annotations.Expose
