@@ -1,5 +1,6 @@
 package ru.mironov.drawpathonmaptesttask
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -10,7 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.geometry.Polyline
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.MapObject
+import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var map: com.yandex.mapkit.map.Map
 
     private lateinit var progressBar: ProgressBar
+
+    private lateinit var mapObjects: MapObjectCollection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +47,8 @@ class MainActivity : AppCompatActivity() {
 
         map = mapView!!.map
 
+        mapObjects = map.mapObjects.addCollection()
+
         setupObserver()
 
         viewModel.getGeoJson()
@@ -51,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 Status.RESPONSE -> {
                     drawPolylines()
+                    //drawPolyline(159)
                 }
                 Status.ERROR -> {
                     progressBar.visibility = View.INVISIBLE
@@ -67,17 +76,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun drawPolyline(i: Int) {
+        val mapPolyline = mapObjects.addPolyline(viewModel.arrayPolylines[i])
+        mapPolyline.strokeColor = Color.RED
+        mapPolyline.strokeWidth= 5F
+    }
+
+
     fun drawPolylines() {
-        lifecycleScope.launch(Dispatchers.Main){viewModel.arrayPolylines.forEach { polyline ->
-            map.mapObjects.addCollection().addPolyline(polyline)
-        }
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.arrayPolylines.forEach { polyline ->
+                val mapPolyline = mapObjects.addPolyline(polyline)
+
+            }
             progressBar.visibility = View.INVISIBLE
-            val len=viewModel.calculateLengths()
+            val len = viewModel.calculateLengths()
             Toast.makeText(
                 applicationContext,
-                "length="+len+"km",
+                "length=" + len + "km",
                 Toast.LENGTH_LONG
-            ).show()}
+            ).show()
+        }
     }
 
     fun moveCamera() {

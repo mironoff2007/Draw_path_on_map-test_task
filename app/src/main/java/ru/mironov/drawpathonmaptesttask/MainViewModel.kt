@@ -50,8 +50,11 @@ class MainViewModel : ViewModel() {
     }
 
     fun calculateLengths(): Int {
+        val arr= arrayListOf<Int>()
         var length = 0.0
+        var lengthPolyline = 0.0
         var pointLast: Point? = null
+
 
         arrayPolylines.forEach {
             //Polyline next
@@ -60,10 +63,14 @@ class MainViewModel : ViewModel() {
                 //Point next
                 if (pointLast != null) {
                     //Calc on second point
-                    length = length + Geo.distance(pointLast!!, it)
+                    lengthPolyline += Geo.distance(pointLast!!, it)
                 }
                 pointLast = it
             }
+            arr.add((lengthPolyline / 1000).toInt())
+            length += lengthPolyline
+            lengthPolyline=0.0
+
         }
         return (length / 1000).toInt()
     }
