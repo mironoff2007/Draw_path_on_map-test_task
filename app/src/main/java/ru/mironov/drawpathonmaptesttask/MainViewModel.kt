@@ -2,6 +2,7 @@ package ru.mironov.drawpathonmaptesttask
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yandex.mapkit.geometry.Geo
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
 
@@ -48,19 +49,22 @@ class MainViewModel : ViewModel() {
         viewModelStatus.postValue(Status.LOADING)
     }
 
-    fun calculateLengths():Int{
-        val calc=DistanceCalculator()
-        var length=0.0
-        var pointLast:Point?=null
+    fun calculateLengths(): Int {
+        var length = 0.0
+        var pointLast: Point? = null
 
-        arrayPolylines.forEach{
+        arrayPolylines.forEach {
+            //Polyline next
+            pointLast = null
             it.points.forEach {
-                if(pointLast!=null){
-                length=length+calc.calcDist(pointLast!!,it)}
-                pointLast=it
+                //Point next
+                if (pointLast != null) {
+                    //Calc on second point
+                    length = length + Geo.distance(pointLast!!, it)
+                }
+                pointLast = it
             }
-            pointLast=null
         }
-        return (length/1000).toInt()
+        return (length / 1000).toInt()
     }
 }
