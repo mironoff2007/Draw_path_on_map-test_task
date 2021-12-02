@@ -60,17 +60,19 @@ class MainActivity : AppCompatActivity() {
         viewModel.viewModelStatus.observe(this) {
             when (it) {
                 Status.RESPONSE -> {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        drawPolylines()
-                        //отдельно отрисовать самую длинную полилинию
-                        //drawPolyline(159)
-
-                        //посчитать и показать длину всех линий
+                    //посчитать и показать длину всех линий
+                    lifecycleScope.launch(Dispatchers.Default) {
                         val len = viewModel.calculateLengths()
-                        textView.text =
-                            getString(R.string.length) + " = " + len.toString() + getString(R.string.length_unit)
-                        progressBar.visibility = View.INVISIBLE
+                        runOnUiThread {
+                            textView.text =
+                                getString(R.string.length) + " = " + len.toString() + getString(R.string.length_unit)
+                        }
                     }
+                    //отобразить все полилинии
+                    drawPolylines()
+                    //отдельно отрисовать самую длинную полилинию
+                    //drawPolyline(159)
+                    progressBar.visibility = View.INVISIBLE
                 }
                 Status.ERROR -> {
                     progressBar.visibility = View.INVISIBLE
