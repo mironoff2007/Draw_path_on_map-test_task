@@ -2,6 +2,7 @@ package ru.mironov.drawpathonmaptesttask
 
 
 import androidx.lifecycle.MutableLiveData
+import kotlinx.serialization.json.Json
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -16,17 +17,21 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
         NetworkService
             .getJSONApi()
             .getGeoJson()
-            ?.enqueue(object : Callback<MyJsonObject?> {
+            ?.enqueue(object : Callback<String?> {
 
-                override fun onFailure(call: Call<MyJsonObject?>, t: Throwable) {
+                override fun onFailure(call: Call<String?>, t: Throwable) {
                     dataStatus.postValue(Status.ERROR)
                 }
 
-                override fun onResponse(call: Call<MyJsonObject?>, response: Response<MyJsonObject?>) {
+                override fun onResponse(call: Call<String?>, response: Response<String?>) {
                     if (response.body() == null) {
                         dataStatus.postValue(Status.ERROR)
                     } else {
-                        geoJson = response.body()
+                        val format = Json { ignoreUnknownKeys = true }
+                        geoJson = format.decodeFromString(
+                            MyJsonObject.serializer(),
+                            response.body()!!
+                        )
                         dataStatus.postValue(Status.RESPONSE)
                     }
                 }

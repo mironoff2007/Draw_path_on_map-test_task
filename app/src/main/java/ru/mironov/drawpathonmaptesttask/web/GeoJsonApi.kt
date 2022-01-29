@@ -7,5 +7,5 @@ import ru.mironov.drawpathonmaptesttask.model.MyJsonObject
 
 interface GeoJsonApi {
     @GET("russia.geo.json")
-    fun getGeoJson(): Call<MyJsonObject>?
+    fun getGeoJson(): Call<String>?
 }

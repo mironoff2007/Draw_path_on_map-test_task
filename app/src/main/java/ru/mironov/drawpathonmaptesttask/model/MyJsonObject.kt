@@ -1,34 +1,31 @@
 package ru.mironov.drawpathonmaptesttask.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
-public class MyJsonObject {
-    @SerializedName("type")
-    @Expose
+@Serializable
+class MyJsonObject {
+    @SerialName("type")
     var type: String? = null
-    @SerializedName("features")
-    @Expose
+
+    @SerialName("features")
     var features:ArrayList<Feature?>?=null
 
+    @Serializable
     class Feature{
-        @SerializedName("type")
-        @Expose
+
+        @SerialName("type")
         var type: String? = null
 
-        @SerializedName("geometry")
-        @Expose
+        @SerialName("geometry")
         var geometry: Geometry?=null
     }
+    @Serializable
     class Geometry{
-        @SerializedName("type")
-        @Expose
+        @SerialName("type")
         var type: String? = null
 
-
-        @SerializedName("coordinates")
-        @Expose
+        @SerialName("coordinates")
         var coordinates:ArrayList<ArrayList<ArrayList<ArrayList<Double>?>?>?>?=null
-
     }
 }
