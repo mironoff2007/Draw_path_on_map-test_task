@@ -3,6 +3,7 @@ package ru.mironov.drawpathonmaptesttask
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -55,11 +56,14 @@ class MainActivity : AppCompatActivity() {
         viewModel.getGeoJson()
     }
 
+    var startTime:Long=0
+
     @SuppressLint("SetTextI18n")
     private fun setupObserver() {
         viewModel.viewModelStatus.observe(this) {
             when (it) {
                 Status.RESPONSE -> {
+                    Log.d("My_tag","Response after -" +(System.currentTimeMillis()-startTime)/1000f)
                     //посчитать и показать длину всех линий
                     lifecycleScope.launch(Dispatchers.Default) {
                         val len = viewModel.calculateLengths()
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
                 Status.LOADING -> {
+                    startTime=System.currentTimeMillis()
                     progressBar.visibility = View.VISIBLE
                     textView.text = getString(R.string.loading)
                 }
