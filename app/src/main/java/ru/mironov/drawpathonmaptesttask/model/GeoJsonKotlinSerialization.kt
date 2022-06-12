@@ -4,12 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class MyJsonObject {
+class GeoJsonKotlinSerialization {
     @SerialName("type")
     var type: String? = null
 
     @SerialName("features")
-    var features:ArrayList<Feature?>?=null
+    var features: ArrayList<Feature?>? = null
 
     @Serializable
     class Feature{
@@ -18,7 +18,7 @@ class MyJsonObject {
         var type: String? = null
 
         @SerialName("geometry")
-        var geometry: Geometry?=null
+        var geometry: Geometry? = null
     }
     @Serializable
     class Geometry{
@@ -26,6 +26,6 @@ class MyJsonObject {
         var type: String? = null
 
         @SerialName("coordinates")
-        var coordinates:ArrayList<ArrayList<ArrayList<ArrayList<Double>?>?>?>?=null
+        var coordinates: ArrayList<ArrayList<ArrayList<ArrayList<Double>?>?>?>? = null
     }
 }

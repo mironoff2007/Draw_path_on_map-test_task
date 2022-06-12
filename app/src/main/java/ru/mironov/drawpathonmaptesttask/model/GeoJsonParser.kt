@@ -7,19 +7,19 @@ class GeoJsonParser {
 
     private var arrayPoints = arrayListOf<Point>()
 
-    fun parsePolylines(jsonObject: MyJsonObject?): ArrayList<Polyline> {
+    fun parsePolylines(jsonObject: GeoJsonKotlinSerialization?): ArrayList<Polyline> {
         val arrayPolylines = arrayListOf<Polyline>()
 
         val feature = jsonObject?.features?.get(0)
         //List of Poligons/Polylines
-        feature?.geometry?.coordinates?.forEach() {
+        feature?.geometry?.coordinates?.forEach() { coordinates ->
             //List of points
             //List of polylines has list with 1 value
             val arrayOfPoints = arrayListOf<Point>()
-            it?.get(0)?.forEach() {
+            coordinates?.get(0)?.forEach() { coordinatePair ->
                 //Add point
-                if (it?.get(1) !== null && it?.get(0) !== null) {
-                    arrayOfPoints.add(Point(it?.get(1), it?.get(0)))
+                if (coordinatePair?.get(1) !== null) {
+                    arrayOfPoints.add(Point(coordinatePair[1], coordinatePair[0]))
                 }
             }
             //add polyline

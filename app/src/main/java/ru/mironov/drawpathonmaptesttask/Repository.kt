@@ -6,12 +6,12 @@ import kotlinx.serialization.json.Json
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.mironov.drawpathonmaptesttask.model.MyJsonObject
+import ru.mironov.drawpathonmaptesttask.model.GeoJsonKotlinSerialization
 import ru.mironov.drawpathonmaptesttask.web.NetworkService
 
 class Repository(var dataStatus: MutableLiveData<Status>) {
 
-    var geoJson: MyJsonObject? = null
+    var geoJson: GeoJsonKotlinSerialization? = null
 
     fun getGeoJson() {
         NetworkService
@@ -29,7 +29,7 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
                     } else {
                         val format = Json { ignoreUnknownKeys = true }
                         geoJson = format.decodeFromString(
-                            MyJsonObject.serializer(),
+                            GeoJsonKotlinSerialization.serializer(),
                             response.body()!!
                         )
                         dataStatus.postValue(Status.RESPONSE)
