@@ -16,7 +16,7 @@ class JsonDesTest {
 
     var time = 0L
 
-    val jsonString = GeoJson.getJsonString()
+    private val jsonString = GeoJson.getJsonString()
 
     @get:Rule
     var testName: TestName = TestName()
@@ -28,9 +28,11 @@ class JsonDesTest {
 
     @Test
     fun gsonTest() {
+        val gson = Gson()
+
         time = System.currentTimeMillis()
 
-        val geoJson: GeoJsonGson = Gson().fromJson(jsonString, object : TypeToken<GeoJsonGson>() {}.type)
+        val geoJson: GeoJsonGson = gson.fromJson(jsonString, object : TypeToken<GeoJsonGson>() {}.type)
 
         println(testName.methodName + "-" + (time - System.currentTimeMillis()))
         assert(geoJson.features!!.first()!!.geometry!!.coordinates!!.size == 213)
@@ -38,10 +40,12 @@ class JsonDesTest {
 
     @Test
     fun kotlinSerializationTest() {
-        time = System.currentTimeMillis()
         val geoJson: GeoJsonKotlinSerialization
         val format = Json { ignoreUnknownKeys = true }
-        geoJson = format.decodeFromString(GeoJsonKotlinSerialization.serializer(), jsonString)
+        val serializer = GeoJsonKotlinSerialization.serializer()
+
+        time = System.currentTimeMillis()
+        geoJson = format.decodeFromString(serializer, jsonString)
 
         println(testName.methodName + "-" + (time - System.currentTimeMillis()))
         assert(geoJson.features!!.first()!!.geometry!!.coordinates!!.size == 213)
@@ -49,8 +53,10 @@ class JsonDesTest {
 
     @Test
     fun jacksonTest() {
+        val mapper = ObjectMapper()
+
         time = System.currentTimeMillis()
-        val geoJson: GeoJackson = ObjectMapper().readValue(jsonString, GeoJackson::class.java)
+        val geoJson: GeoJackson = mapper.readValue(jsonString, GeoJackson::class.java)
 
         println(testName.methodName + "-" + (time - System.currentTimeMillis()))
         assert(geoJson.features!!.first()!!.geometry!!.coordinates!!.size == 213)
