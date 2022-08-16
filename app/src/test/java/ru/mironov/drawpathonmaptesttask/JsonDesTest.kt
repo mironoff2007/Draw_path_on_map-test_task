@@ -10,6 +10,7 @@ import org.junit.Test
 import org.junit.rules.TestName
 import ru.mironov.drawpathonmaptesttask.model.GeoJackson
 import ru.mironov.drawpathonmaptesttask.model.GeoJsonGson
+import ru.mironov.drawpathonmaptesttask.model.GeoJsonGsonWoAn
 import ru.mironov.drawpathonmaptesttask.model.GeoJsonKotlinSerialization
 
 class JsonDesTest {
@@ -33,6 +34,18 @@ class JsonDesTest {
         time = System.currentTimeMillis()
 
         val geoJson: GeoJsonGson = gson.fromJson(jsonString, object : TypeToken<GeoJsonGson>() {}.type)
+
+        println(testName.methodName + "-" + (time - System.currentTimeMillis()))
+        assert(geoJson.features!!.first()!!.geometry!!.coordinates!!.size == 213)
+    }
+
+    @Test
+    fun gsonTestWithoutAnnotations() {
+        val gson = Gson()
+
+        time = System.currentTimeMillis()
+
+        val geoJson: GeoJsonGsonWoAn = gson.fromJson(jsonString, object : TypeToken<GeoJsonGsonWoAn>() {}.type)
 
         println(testName.methodName + "-" + (time - System.currentTimeMillis()))
         assert(geoJson.features!!.first()!!.geometry!!.coordinates!!.size == 213)
