@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var mapObjects: MapObjectCollection
     private lateinit var textView: TextView
+    private lateinit var updateButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         mapView = findViewById<View>(R.id.mapview) as MapView
         textView = findViewById<View>(R.id.textView) as TextView
         progressBar = findViewById<View>(R.id.progressBar) as ProgressBar
+        updateButton = findViewById<View>(R.id.updateButton) as Button
 
         map = mapView!!.map
 
@@ -53,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         setupObserver()
 
         viewModel.getGeoJson()
+        updateButton.setOnClickListener { viewModel.getGeoJson() }
     }
 
     @SuppressLint("SetTextI18n")
