@@ -25,7 +25,7 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
 
     var parseType = Parser.KOTLINX
 
-    fun getGeoJson() {
+    fun getGeoJsonWeb() {
         NetworkService
             .getJSONApi()
             .getGeoJson()
@@ -39,48 +39,56 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
                     if (response.body() == null) {
                         dataStatus.postValue(Status.ERROR)
                     } else {
-                        val jsonString = response.body()
-                        var time = 0L
-                        when (parseType){
-                            Parser.GSON ->{
-                                val gson = Gson()
-                                gson.serializeNulls()
-
-                                time = System.currentTimeMillis()
-                                val geoJson: GeoJsonGson = gson.fromJson(jsonString, object : TypeToken<GeoJsonGsonWoAn>() {}.type)
-                            }
-                            Parser.GSON_WO_AN->{
-                                val gson = Gson()
-                                gson.serializeNulls()
-
-                                time = System.currentTimeMillis()
-                                val geoJson: GeoJsonGsonWoAn = gson.fromJson(jsonString, object : TypeToken<GeoJsonGsonWoAn>() {}.type)
-                            }
-                            Parser.JACKSON -> {
-                                val mapper = ObjectMapper()
-                                time = System.currentTimeMillis()
-                                val geoJson: GeoJackson = mapper.readValue(jsonString, GeoJackson::class.java)
-                            }
-                            Parser.KOTLINX ->{
-                                time = System.currentTimeMillis()
-                                val format = Json { ignoreUnknownKeys = true }
-                                geoJson = format.decodeFromString(GeoJsonKotlinSerialization.serializer(), response.body()!!)
-                            }
-                            Parser.MOSHI ->{
-                                val moshi = Moshi.Builder().build()
-                                time = System.currentTimeMillis()
-                                val jsonAdapter: JsonAdapter<GeoJsonMoshi> = moshi.adapter(
-                                    GeoJsonMoshi::class.java
-                                )
-                                val geoJson: GeoJsonMoshi = jsonAdapter.fromJson(jsonString)!!
-                            }
-
-                        }
-                        Log.d("PARSE_JSON", "parse time;" + (time - System.currentTimeMillis()))
-
+                        val jsonString = response.body() ?: ""
+                        parse(jsonString)
                         dataStatus.postValue(Status.RESPONSE)
                     }
                 }
             })
+    }
+
+    fun getGeoJsonRes(jsonString: String) {
+        parse(jsonString)
+        dataStatus.postValue(Status.RESPONSE)
+    }
+
+    private fun parse(jsonString: String){
+        var time = 0L
+        when (parseType){
+            Parser.GSON ->{
+                val gson = Gson()
+                gson.serializeNulls()
+
+                time = System.currentTimeMillis()
+                val geoJson: GeoJsonGson = gson.fromJson(jsonString, object : TypeToken<GeoJsonGsonWoAn>() {}.type)
+            }
+            Parser.GSON_WO_AN->{
+                val gson = Gson()
+                gson.serializeNulls()
+
+                time = System.currentTimeMillis()
+                val geoJson: GeoJsonGsonWoAn = gson.fromJson(jsonString, object : TypeToken<GeoJsonGsonWoAn>() {}.type)
+            }
+            Parser.JACKSON -> {
+                val mapper = ObjectMapper()
+                time = System.currentTimeMillis()
+                val geoJson: GeoJackson = mapper.readValue(jsonString, GeoJackson::class.java)
+            }
+            Parser.KOTLINX ->{
+                time = System.currentTimeMillis()
+                val format = Json { ignoreUnknownKeys = true }
+                geoJson = format.decodeFromString(GeoJsonKotlinSerialization.serializer(), jsonString)
+            }
+            Parser.MOSHI ->{
+                val moshi = Moshi.Builder().build()
+                time = System.currentTimeMillis()
+                val jsonAdapter: JsonAdapter<GeoJsonMoshi> = moshi.adapter(
+                    GeoJsonMoshi::class.java
+                )
+                val geoJson: GeoJsonMoshi = jsonAdapter.fromJson(jsonString)!!
+            }
+
+        }
+        Log.d("PARSE_JSON", "parse time;" + (time - System.currentTimeMillis()))
     }
 }

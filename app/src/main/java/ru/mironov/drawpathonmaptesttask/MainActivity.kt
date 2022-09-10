@@ -55,8 +55,9 @@ class MainActivity : AppCompatActivity() {
 
         setupObserver()
 
-        viewModel.getGeoJson()
-        updateButton.setOnClickListener { viewModel.getGeoJson() }
+        //viewModel.getGeoJson()
+        viewModel.getGeoJsonRes(this)
+        updateButton.setOnClickListener { viewModel.getGeoJsonRes(this) }
     }
 
     @SuppressLint("SetTextI18n")

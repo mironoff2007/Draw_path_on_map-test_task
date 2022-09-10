@@ -1,10 +1,14 @@
 package ru.mironov.drawpathonmaptesttask.model
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.yandex.mapkit.geometry.Geo
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.mironov.drawpathonmaptesttask.Repository
 import ru.mironov.drawpathonmaptesttask.Status
 
@@ -49,8 +53,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun getGeoJson() {
-        repository.getGeoJson()
-        viewModelStatus.postValue(Status.LOADING)
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getGeoJsonWeb()
+            viewModelStatus.postValue(Status.LOADING)
+        }
     }
 
     fun calculateLengths(): Int {
@@ -79,5 +85,11 @@ class MainViewModel : ViewModel() {
         }
         //Перевести в километры
         return (length / 1000).toInt()
+    }
+
+    fun getGeoJsonRes(context: Context) {
+        viewModelScope.launch (Dispatchers.Default){
+            repository.getGeoJsonRes(GeoJsonParserProvider.readJson(context))
+        }
     }
 }
