@@ -23,7 +23,7 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
         GSON, GSON_WO_AN, JACKSON, KOTLINX, MOSHI
     }
 
-    var parseType = Parser.MOSHI
+    var parseType = Parser.KOTLINX
 
     fun getGeoJson() {
         NetworkService
