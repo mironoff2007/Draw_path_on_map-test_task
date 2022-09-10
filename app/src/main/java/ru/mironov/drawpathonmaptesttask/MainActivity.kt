@@ -18,8 +18,10 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.mironov.drawpathonmaptesttask.model.MainViewModel
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -69,15 +71,16 @@ class MainActivity : AppCompatActivity() {
                     lifecycleScope.launch(Dispatchers.Default) {
                         val len = viewModel.calculateLengths()
                         runOnUiThread {
-                            textView.text =
-                                getString(R.string.length) + " = " + len.toString() + getString(R.string.length_unit)
+                            textView.text = getString(R.string.length) + " = " + len.toString() + getString(R.string.length_unit)
                         }
                     }
-                    //отобразить все полилинии
-                    drawPolylines()
-                    //отдельно отрисовать самую длинную полилинию
-                    //drawPolyline(159)
-                    progressBar.visibility = View.INVISIBLE
+                        //отобразить все полилинии
+                        drawPolylines()
+                        //отдельно отрисовать самую длинную полилинию
+                        //drawPolyline(159)
+                        progressBar.visibility = View.INVISIBLE
+
+                    viewModel.getGeoJsonRes(this)
                 }
                 Status.ERROR -> {
                     progressBar.visibility = View.INVISIBLE
@@ -106,7 +109,8 @@ class MainActivity : AppCompatActivity() {
 
     //нарисовать все полилинии
     private fun drawPolylines() {
-        viewModel.arrayPolylines.forEach { polyline ->
+        viewModel.arrayPolylines.forEach {
+                polyline ->
             val mapPolyline = mapObjects.addPolyline(polyline)
             mapPolyline.strokeColor = Color.GREEN
             mapPolyline.strokeWidth = 1F

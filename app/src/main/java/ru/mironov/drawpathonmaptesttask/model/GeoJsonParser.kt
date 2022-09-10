@@ -7,12 +7,11 @@ class GeoJsonParser {
 
     private var arrayPoints = arrayListOf<Point>()
 
-    fun parsePolylines(jsonObject: GeoJsonKotlinSerialization?): ArrayList<Polyline> {
+    fun parsePolylines(coords:  List<List<List<List<Double>?>?>?>? ): ArrayList<Polyline> {
         val arrayPolylines = arrayListOf<Polyline>()
 
-        val feature = jsonObject?.features?.get(0)
         //List of Poligons/Polylines
-        feature?.geometry?.coordinates?.forEach() { coordinates ->
+        coords?.forEach() { coordinates ->
             //List of points
             //List of polylines has list with 1 value
             val arrayOfPoints = arrayListOf<Point>()

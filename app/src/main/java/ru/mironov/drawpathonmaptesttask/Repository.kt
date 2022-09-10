@@ -17,13 +17,13 @@ import ru.mironov.drawpathonmaptesttask.web.NetworkService
 
 class Repository(var dataStatus: MutableLiveData<Status>) {
 
-    var geoJson: GeoJsonKotlinSerialization? = null
+    var coords: List<List<List<List<Double>?>?>?>? = null
 
     enum class Parser {
         GSON, GSON_WO_AN, JACKSON, KOTLINX, MOSHI
     }
 
-    var parseType = Parser.KOTLINX
+    var parseType = Parser.MOSHI
 
     fun getGeoJsonWeb() {
         NetworkService
@@ -60,35 +60,39 @@ class Repository(var dataStatus: MutableLiveData<Status>) {
                 gson.serializeNulls()
 
                 time = System.currentTimeMillis()
-                val geoJson: GeoJsonGson = gson.fromJson(jsonString, object : TypeToken<GeoJsonGsonWoAn>() {}.type)
+                val geoJson: GeoJsonGson = gson.fromJson(jsonString, object : TypeToken<GeoJsonGson>() {}.type)
+                coords = geoJson.features?.getOrNull(0)?.geometry?.coordinates
             }
-            Parser.GSON_WO_AN->{
+            Parser.GSON_WO_AN-> {
                 val gson = Gson()
                 gson.serializeNulls()
 
                 time = System.currentTimeMillis()
                 val geoJson: GeoJsonGsonWoAn = gson.fromJson(jsonString, object : TypeToken<GeoJsonGsonWoAn>() {}.type)
+                coords = geoJson.features?.getOrNull(0)?.geometry?.coordinates
             }
             Parser.JACKSON -> {
                 val mapper = ObjectMapper()
                 time = System.currentTimeMillis()
                 val geoJson: GeoJackson = mapper.readValue(jsonString, GeoJackson::class.java)
+                coords = geoJson.features?.getOrNull(0)?.geometry?.coordinates
             }
-            Parser.KOTLINX ->{
+            Parser.KOTLINX -> {
                 time = System.currentTimeMillis()
                 val format = Json { ignoreUnknownKeys = true }
-                geoJson = format.decodeFromString(GeoJsonKotlinSerialization.serializer(), jsonString)
+                val geoJson: GeoJsonKotlinSerialization =  format.decodeFromString(GeoJsonKotlinSerialization.serializer(), jsonString)
+                coords = geoJson.features?.getOrNull(0)?.geometry?.coordinates
             }
-            Parser.MOSHI ->{
+            Parser.MOSHI -> {
                 val moshi = Moshi.Builder().build()
                 time = System.currentTimeMillis()
                 val jsonAdapter: JsonAdapter<GeoJsonMoshi> = moshi.adapter(
                     GeoJsonMoshi::class.java
                 )
                 val geoJson: GeoJsonMoshi = jsonAdapter.fromJson(jsonString)!!
+                coords = geoJson.features?.getOrNull(0)?.geometry?.coordinates
             }
-
         }
-        Log.d("PARSE_JSON", "parse time;" + (time - System.currentTimeMillis()))
+        Log.d("PARSE_JSON", "parse time;" + (System.currentTimeMillis() - time))
     }
 }

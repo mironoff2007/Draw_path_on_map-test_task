@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.yandex.mapkit.geometry.Geo
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
+import kotlinx.coroutines.Delay
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.mironov.drawpathonmaptesttask.Repository
 import ru.mironov.drawpathonmaptesttask.Status
@@ -32,8 +34,8 @@ class MainViewModel : ViewModel() {
                 Status.RESPONSE -> {
                     //Parse and crate list of polylines
                     val parser = GeoJsonParser()
-                    if (repository.geoJson != null) {
-                        arrayPolylines = parser.parsePolylines(repository.geoJson!!)
+                    if (repository.coords != null) {
+                        arrayPolylines = parser.parsePolylines(repository.coords)
                         if (arrayPolylines.size > 0) {
                             viewModelStatus.postValue(Status.RESPONSE)
                         } else {
