@@ -1,4 +1,4 @@
-package ru.mironov.drawpathonmaptesttask.model
+package ru.mironov.drawpathonmaptesttask.model.geojson
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -13,6 +13,23 @@ data class GeoJsonMoshi(
     var features: List<Feature?>? = null
 
     ) {
+
+    fun toGeoJson(): GeoJson {
+        val features = this.features?.map {
+            GeoJson.Feature(
+                type = it?.type,
+                geometry = GeoJson.Geometry(
+                    type = it?.geometry?.type,
+                    coordinates = it?.geometry?.coordinates
+                )
+            )
+        }
+
+        return GeoJson(
+            type = type,
+            features = features
+        )
+    }
 
     @JsonClass(generateAdapter = true)
     class Feature(

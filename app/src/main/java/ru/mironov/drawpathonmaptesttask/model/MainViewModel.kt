@@ -11,42 +11,42 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.mironov.drawpathonmaptesttask.Repository
 import ru.mironov.drawpathonmaptesttask.Status
+import ru.mironov.drawpathonmaptesttask.StatusRepo
+import ru.mironov.drawpathonmaptesttask.model.geojson.GeoJsonParser
+import ru.mironov.drawpathonmaptesttask.model.geojson.GeoJsonProvider
 
 class MainViewModel : ViewModel() {
 
-    private var repository: Repository
+    private var repository: Repository = Repository()
 
     var arrayPolylines = arrayListOf<Polyline>()
 
-    private val dataStatus: MutableLiveData<Status> = MutableLiveData<Status>()
     val viewModelStatus: MutableLiveData<Status> = MutableLiveData<Status>()
 
     init {
-        repository = Repository(dataStatus)
         setupObserver()
     }
 
     private fun setupObserver() {
         repository.dataStatus.observeForever { status ->
             when (status) {
-                Status.RESPONSE -> {
+                is StatusRepo.RESPONSE -> {
                     //Parse and crate list of polylines
-                    val parser = GeoJsonParser()
-                    if (repository.geoJson != null) {
-                        arrayPolylines = parser.parsePolylines(repository.geoJson!!)
+                    if (status.geoJson != null) {
+                        arrayPolylines = PolylinesParser.parsePolylines(status.geoJson)
                         if (arrayPolylines.size > 0) {
-                            viewModelStatus.postValue(Status.RESPONSE)
+                            viewModelStatus.postValue(Status.RESPONSE(arrayPolylines))
                         } else {
                             //если почему-то координат нет
-                            viewModelStatus.postValue(Status.ERROR)
+                            viewModelStatus.postValue(Status.ERROR("coords are empty"))
                         }
                     } else {
                         //если пустой ответ
-                        viewModelStatus.postValue(Status.ERROR)
+                        viewModelStatus.postValue(Status.ERROR("body is empty"))
                     }
                 }
-                Status.ERROR -> {
-                    viewModelStatus.postValue(Status.ERROR)
+                is StatusRepo.ERROR -> {
+                    viewModelStatus.postValue(Status.ERROR(""))
                 }
             }
         }
@@ -89,7 +89,7 @@ class MainViewModel : ViewModel() {
 
     fun getGeoJsonRes(context: Context) {
         viewModelScope.launch (Dispatchers.Default){
-            repository.getGeoJsonRes(GeoJsonParserProvider.readJson(context))
+            repository.getGeoJsonRes(GeoJsonProvider.readJson(context))
         }
     }
 }

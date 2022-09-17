@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.geometry.Polyline
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.mapview.MapView
@@ -55,16 +56,16 @@ class MainActivity : AppCompatActivity() {
 
         setupObserver()
 
-        //viewModel.getGeoJson()
-        viewModel.getGeoJsonRes(this)
-        updateButton.setOnClickListener { viewModel.getGeoJsonRes(this) }
+        viewModel.getGeoJson()
+        //viewModel.getGeoJsonRes(this)
+        //updateButton.setOnClickListener { viewModel.getGeoJsonRes(this) }
     }
 
     @SuppressLint("SetTextI18n")
     private fun setupObserver() {
         viewModel.viewModelStatus.observe(this) {
             when (it) {
-                Status.RESPONSE -> {
+                is Status.RESPONSE -> {
                     //посчитать и показать длину всех линий
                     lifecycleScope.launch(Dispatchers.Default) {
                         val len = viewModel.calculateLengths()
@@ -74,12 +75,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     //отобразить все полилинии
-                    drawPolylines()
+                    drawPolylines(it.lines)
                     //отдельно отрисовать самую длинную полилинию
                     //drawPolyline(159)
                     progressBar.visibility = View.INVISIBLE
                 }
-                Status.ERROR -> {
+                is Status.ERROR -> {
                     progressBar.visibility = View.INVISIBLE
                     Toast.makeText(
                         applicationContext,
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                Status.LOADING -> {
+                is Status.LOADING -> {
                     progressBar.visibility = View.VISIBLE
                     textView.text = getString(R.string.loading)
                 }
@@ -105,8 +106,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     //нарисовать все полилинии
-    private fun drawPolylines() {
-        viewModel.arrayPolylines.forEach { polyline ->
+    private fun drawPolylines(lines: List<Polyline>) {
+        lines.forEach { polyline ->
             val mapPolyline = mapObjects.addPolyline(polyline)
             mapPolyline.strokeColor = Color.GREEN
             mapPolyline.strokeWidth = 1F

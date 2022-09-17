@@ -1,4 +1,4 @@
-package ru.mironov.drawpathonmaptesttask.model
+package ru.mironov.drawpathonmaptesttask.model.geojson
 
 
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -13,8 +13,24 @@ data class GeoJackson(
 
     @field:JsonProperty("features")
     @param:JsonProperty("features")
-    var features: ArrayList<Feature?>? = null
+    var features: List<Feature?>? = null
 ) {
+    fun toGeoJson(): GeoJson {
+        val features = this.features?.map {
+            GeoJson.Feature(
+                type = it?.type,
+                geometry = GeoJson.Geometry(
+                    type = it?.geometry?.type,
+                    coordinates = it?.geometry?.coordinates
+                )
+            )
+        }
+
+        return GeoJson(
+            type = type,
+            features = features
+        )
+    }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class Feature @JsonCreator constructor(
@@ -34,6 +50,6 @@ data class GeoJackson(
 
         @field:JsonProperty("coordinates")
         @param:JsonProperty("coordinates")
-        var coordinates: ArrayList<ArrayList<ArrayList<ArrayList<Double>?>?>?>? = null
+        var coordinates: List<List<List<List<Double>?>?>?>? = null
     )
 }

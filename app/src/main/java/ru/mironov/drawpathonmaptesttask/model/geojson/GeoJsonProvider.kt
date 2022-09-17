@@ -1,13 +1,12 @@
-package ru.mironov.drawpathonmaptesttask.model
+package ru.mironov.drawpathonmaptesttask.model.geojson
 
 import android.content.Context
 import android.content.res.Resources
 import android.util.Log
-import com.squareup.moshi.Moshi
 import ru.mironov.drawpathonmaptesttask.R
 
 
-object GeoJsonParserProvider {
+object GeoJsonProvider {
 
     fun readJson(context: Context): String {
         return  try {

@@ -8,10 +8,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestName
-import ru.mironov.drawpathonmaptesttask.model.GeoJackson
-import ru.mironov.drawpathonmaptesttask.model.GeoJsonGson
-import ru.mironov.drawpathonmaptesttask.model.GeoJsonGsonWoAn
-import ru.mironov.drawpathonmaptesttask.model.GeoJsonKotlinSerialization
 
 class JsonDesTest {
 
