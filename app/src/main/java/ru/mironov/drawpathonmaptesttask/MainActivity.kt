@@ -4,10 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +18,7 @@ import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.mironov.drawpathonmaptesttask.model.MainViewModel
+import ru.mironov.drawpathonmaptesttask.model.geojson.GeoJsonParser
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapObjects: MapObjectCollection
     private lateinit var textView: TextView
     private lateinit var updateButton: Button
+    private lateinit var parseTypeSpinner: Spinner
+
+    private var selectedParser: String = GeoJsonParser.Parser.GSON.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +44,31 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         mapView = findViewById<View>(R.id.mapview) as MapView
         textView = findViewById<View>(R.id.textView) as TextView
         progressBar = findViewById<View>(R.id.progressBar) as ProgressBar
         updateButton = findViewById<View>(R.id.updateButton) as Button
+        parseTypeSpinner = findViewById<View>(R.id.parseTypeSpinner) as Spinner
+
+        val parsersNames = GeoJsonParser.Parser.values().map { it.name }
+
+        parseTypeSpinner.adapter = CustomAdapter(this, parsersNames)
+        parseTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                i: Int,
+                l: Long
+            ) {
+                selectedParser = parsersNames[i]
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+
+            }
+        }
 
         map = mapView!!.map
 
@@ -56,9 +76,8 @@ class MainActivity : AppCompatActivity() {
 
         setupObserver()
 
-        viewModel.getGeoJson()
-        //viewModel.getGeoJsonRes(this)
-        //updateButton.setOnClickListener { viewModel.getGeoJsonRes(this) }
+        viewModel.getGeoJson(selectedParser)
+        updateButton.setOnClickListener { viewModel.getGeoJsonRes(this, selectedParser) }
     }
 
     @SuppressLint("SetTextI18n")

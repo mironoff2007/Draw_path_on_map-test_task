@@ -14,6 +14,10 @@ object GeoJsonParser {
         GSON, GSON_WO_AN, JACKSON, KOTLINX, MOSHI
     }
 
+    fun String.getParserType(): Parser {
+        return Parser.valueOf(this)
+    }
+
     fun parse(jsonString: String, parserType: Parser): GeoJson{
         var time = 0L
         val geoJson = when (parserType){
@@ -55,7 +59,7 @@ object GeoJsonParser {
                 geoJson.toGeoJson()
             }
         }
-        Log.d("Test_tag", ";" + (time - System.currentTimeMillis()))
+        Log.d("Test_tag", "$parserType;" + (time - System.currentTimeMillis()))
         return geoJson
     }
 }

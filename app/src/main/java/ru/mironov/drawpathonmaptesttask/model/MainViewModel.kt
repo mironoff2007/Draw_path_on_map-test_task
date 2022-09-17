@@ -13,6 +13,7 @@ import ru.mironov.drawpathonmaptesttask.Repository
 import ru.mironov.drawpathonmaptesttask.Status
 import ru.mironov.drawpathonmaptesttask.StatusRepo
 import ru.mironov.drawpathonmaptesttask.model.geojson.GeoJsonParser
+import ru.mironov.drawpathonmaptesttask.model.geojson.GeoJsonParser.getParserType
 import ru.mironov.drawpathonmaptesttask.model.geojson.GeoJsonProvider
 
 class MainViewModel : ViewModel() {
@@ -23,6 +24,8 @@ class MainViewModel : ViewModel() {
 
     val viewModelStatus: MutableLiveData<Status> = MutableLiveData<Status>()
 
+    private lateinit var parser: String
+
     init {
         setupObserver()
     }
@@ -31,18 +34,27 @@ class MainViewModel : ViewModel() {
         repository.dataStatus.observeForever { status ->
             when (status) {
                 is StatusRepo.RESPONSE -> {
-                    //Parse and crate list of polylines
-                    if (status.geoJson != null) {
-                        arrayPolylines = PolylinesParser.parsePolylines(status.geoJson)
-                        if (arrayPolylines.size > 0) {
-                            viewModelStatus.postValue(Status.RESPONSE(arrayPolylines))
+                    viewModelScope.launch (Dispatchers.IO) {
+                        //Parse and crate list of polylines
+                        if (status.geoJsonString.isNotEmpty()) {
+                            val geoJson =
+                                if (status.geoJsonString.isNotEmpty()) GeoJsonParser.parse(
+                                    jsonString = status.geoJsonString,
+                                    parserType = parser.getParserType()
+                                )
+                                else null
+
+                            arrayPolylines = PolylinesParser.parsePolylines(geoJson)
+                            if (arrayPolylines.size > 0) {
+                                viewModelStatus.postValue(Status.RESPONSE(arrayPolylines))
+                            } else {
+                                //если почему-то координат нет
+                                viewModelStatus.postValue(Status.ERROR("coords are empty"))
+                            }
                         } else {
-                            //если почему-то координат нет
-                            viewModelStatus.postValue(Status.ERROR("coords are empty"))
+                            //если пустой ответ
+                            viewModelStatus.postValue(Status.ERROR("body is empty"))
                         }
-                    } else {
-                        //если пустой ответ
-                        viewModelStatus.postValue(Status.ERROR("body is empty"))
                     }
                 }
                 is StatusRepo.ERROR -> {
@@ -52,10 +64,19 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun getGeoJson() {
+    fun getGeoJson(selectedParser: String) {
+        this.parser = selectedParser
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getGeoJsonWeb()
             viewModelStatus.postValue(Status.LOADING)
+            repository.getGeoJsonWeb()
+        }
+    }
+
+    fun getGeoJsonRes(context: Context, selectedParser: String) {
+        this.parser = selectedParser
+        viewModelScope.launch (Dispatchers.Default) {
+            viewModelStatus.postValue(Status.LOADING)
+            repository.getGeoJsonRes(GeoJsonProvider.readJson(context))
         }
     }
 
@@ -87,9 +108,4 @@ class MainViewModel : ViewModel() {
         return (length / 1000).toInt()
     }
 
-    fun getGeoJsonRes(context: Context) {
-        viewModelScope.launch (Dispatchers.Default){
-            repository.getGeoJsonRes(GeoJsonProvider.readJson(context))
-        }
-    }
 }
